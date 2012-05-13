@@ -3,6 +3,11 @@ var users = {
 		login: 'jgalilee',
 		password: 'password',
 		role: 'admin'
+	},
+	'dgalilee' : {
+		login: 'dgalilee',
+		password: 'password',
+		role: 'admin'
 	}
 }
 
