@@ -1,0 +1,11 @@
+h1= title
+p Welcome to #{title}
+form(action='/signup', method='POST')
+	p
+		label(for='username') Username: 
+		input(type='text', name='username', id='username')
+	p
+		label(for='login') Password: 
+		input(type='Password', name='password', id='password')
+	p
+		input(type='submit', value='Signup')

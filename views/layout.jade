@@ -1,0 +1,21 @@
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    div(class="container")
+      div(class="header")
+        div(class="panel")
+          div(class="menu")
+            span(class="menu-logo") Welcome #{user.name}
+          div(class="user")
+            span(class="user-item")
+            if (user.guest == true)
+              a(href='/login')
+                span(class="menu-item") login
+            else
+              a(href='/logout')
+                span(class="menu-item") logout
+      div(class="body")
+        section#wrapper!= body
+      div(class="footer")
