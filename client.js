@@ -12,14 +12,25 @@ socket.on('updatechat', function(username, data) {
 
 // listener, whenever the server emits 'updaterooms', this updates the room the client is in
 socket.on('updaterooms', function(rooms, current_room) {
+  
+  // Delete all of the items in the menu
   $('#rooms').empty();
+
   $.each(rooms, function(key, value) {
     if (value == current_room) {
-      $('#rooms').append('<div>' + value + '</div>');
+      $('#rooms').append(
+        '<span class="menu-item">' + value + '</span>'
+      );
     } else {
-      $('#rooms').append('<div><a href="#" onclick="switchRoom(\'' + value + '\')">' + value + '</a></div>');
+      $('#rooms').append(
+        '<a href="#" onclick="switchRoom(\'' + value + '\')">' +
+          '<span class="menu-item">' + value + '</span>' +
+        '</a>'
+      );
     }
   });
+
+
 });
 
 function switchRoom(room) {
