@@ -22,6 +22,19 @@ In progress example application of an authenticated socket.io chat program. User
  2. Install npm
  3. Run npm install -d
 
+## Run
+
+### node
+````
+  $ node app.js
+````
+
+### nodemon
+````
+  $ npm install -g nodemon
+  $ nodemon app.js
+````
+
 ## Using
 
  + expressjs
