@@ -4,6 +4,10 @@ In progress example application of an authenticated socket.io chat program. User
 
 ## TODO
 
+### Testing
+
+Need to install a test suite and learn about how to test node, expressjs and socket.io.
+
 ### Infastructure
 
  1. Add SQL database connection.
