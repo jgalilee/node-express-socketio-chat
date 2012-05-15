@@ -8,7 +8,12 @@ var users = {
 		login: 'dgalilee',
 		password: 'password',
 		role: 'admin'
-	}
+	},
+  'admin' : {
+    login: 'admin',
+    password: 'admin',
+    role: 'admin'
+  }
 }
 
 module.exports.authenticate = function(login, password, callback) {

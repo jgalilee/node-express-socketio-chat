@@ -1,0 +1,11 @@
+{
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/)_|node_modules"
+    },
+    "plugins": [],
+    "jsVersion": 180
+}

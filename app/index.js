@@ -5,19 +5,19 @@ exports.home = function(req, res) {
     value: req.session.value,
     title: 'Welcome'
   });
-}
+};
 
 exports.signup = function(req, res) {
   res.render('signup', {
     title: 'Signup'
   });
-}
+};
 
 exports.login = function(req, res) {
   res.render('login', {
     title: 'Login'
   });
-}
+};
 
 exports.authenticate = function(req, res) {
 
@@ -36,7 +36,7 @@ exports.authenticate = function(req, res) {
       });
     }
   });
-}
+};
 
 exports.logout = function(req, res) {
   console.log(req.session.id);
@@ -44,7 +44,7 @@ exports.logout = function(req, res) {
   res.render('logout', {
     title: 'Logged out'
   })
-}
+};
 
 exports.requiresLogin = function(req, res, next) {
   if(req.session.user) {
@@ -52,4 +52,4 @@ exports.requiresLogin = function(req, res, next) {
   } else {
     res.redirect('/login');
   }
-}
+};
