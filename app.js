@@ -126,9 +126,20 @@ sio.sockets.on('connection', function (socket) {
      *  USER SENDS A MESSAGE
      */
     socket.on('sendchat', function (data) {
+        if(data === "whois"){
+            data = "The following users are connected ... ";
+            for (var username in users) {
+                
+                data += "<br/> " + username;
+            };
+
+
+        }
         sio.sockets.in(socket.room).emit('updatechat', socket.username, data);
         keepAlive();
     });
+
+
 
     /*
      *  USER CHANGES ROOM

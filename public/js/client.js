@@ -11,7 +11,7 @@ socket.on('updatechat', function(username, data) {
 });
 
 // listener, whenever the server emits 'updaterooms', this updates the room the client is in
-socket.on('updaterooms', function(rooms, current_room) {
+var updateFunction = function(rooms, current_room) {
   
   // Delete all of the items in the menu
   $('#rooms').empty();
@@ -29,8 +29,10 @@ socket.on('updaterooms', function(rooms, current_room) {
       );
     }
   });
+}
+socket.on('updaterooms', updateFunction);
 
-});
+
 
 function switchRoom(room) {
   socket.emit('switchRoom', room);
