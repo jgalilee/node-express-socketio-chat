@@ -15,7 +15,7 @@
  * @requires loginHelper
  */
 
-var loginHelper = require('./../../controllers/helpers/loginHelper');
+var loginHelper = require('../helpers/loginHelper');
 
 
 /**
@@ -24,6 +24,7 @@ var loginHelper = require('./../../controllers/helpers/loginHelper');
  * @param controllers object to get the controllers from.
  */
 exports.setupRoutes = function (app, controllers) {
+    'use strict';
     //TODO: move the dependency on loginHelper from the controllers to the api
     //TODO: define custom tags to show the api stuff
     // GET Home

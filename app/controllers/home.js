@@ -10,7 +10,8 @@
  * @description welcome page controller
  */
 exports.index = function (req, res) {
-  res.render('home/index', {
+    'use strict';
+    res.render('home/index', {
         value: req.session.value,
         title: 'Welcome'
     });
