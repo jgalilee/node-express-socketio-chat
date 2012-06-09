@@ -1,17 +1,17 @@
 // Dependencies
 var express = require('express'),
-    //routes = require('./app/api/http/routes').routes,
-    //wsRoutes = require('./app/api/ws/routes').routes,
     io = require('socket.io'),
     app = module.exports = express.createServer(),
-    controllers = require('./app/controllers/controllers'),
+
     util = require('util'),
     sessionStore = new express.session.MemoryStore(),
     parseCookie = require('connect').utils.parseCookie,
     controller = require('./app/controller');
-//loginHelper = require('./app/api/helpers/loginHelper');
-controller.configure(app);
+
+
 // Configuration
+controller.configure(app);
+
 app.configure(function() {
     app.set('views', __dirname + '/app/views');
     app.set('view engine', 'jade');
@@ -71,39 +71,16 @@ app.dynamicHelpers({
     }
 });
 
-//Setup routes
-// configure routes for http
-//routes.setupRoutes(app, controllers);
-//app.get('/logout', loginHelper.requiresLogin, controllers.get('user').logout);
-// for (var url in routes) {
-//     var route = routes[url];
-//     for (var method in route) {
-//         var mapping = route[method];
-//         var requiresAuth = mapping['auth'];
-//         // console.log( route.controller);
-//         var controller = controllers.get(mapping.controller);
-//         // console.log( controllers);
-//         var action = controller[mapping.action];
-//         //console.log(app[method]);
-//         if (requiresAuth) {
-//             console.log(url, action)
-//             app[method](url, loginHelper.requiresLogin, action);
-//         } else {
-//             console.log(url, action)
-//             app[method](url, action);
-//         }
-//     }
 
-// }
 // load all the controllers
 var fs = require('fs');
 fs.readdirSync("./app/controllers/").forEach(function(file) {
-    console.log(file);
     var filePath = "./app/controllers/" + file;
+
+    // Make sure we are not trying to require a dir
     if (file[0] !== '.' && !fs.lstatSync(filePath).isDirectory()) {
         require(filePath);
-    };
-
+    }
 });
 
 
@@ -137,7 +114,7 @@ sio.set('authorization', function(data, accept) {
 });
 
 
-//wsRoutes.setup(sio);
+
 /*
  *  MESSAGE PROGRAM
  */
@@ -174,9 +151,7 @@ sio.sockets.on('connection', function(socket) {
             for (var username in users) {
 
                 data += "<br/> " + username;
-            };
-
-
+            }
         }
         sio.sockets. in (socket.room).emit('updatechat', socket.username, data);
         keepAlive();

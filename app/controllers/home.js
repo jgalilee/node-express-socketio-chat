@@ -12,12 +12,14 @@
 
 
 var Controller = require('../controller');
-
+var loginHelper = require('./helpers/loginHelper');
 
 exports.controller = Controller.define('Home', function() {
 
+
+    this.urlSuffix.set('');
     // /
-    route.get.define('', loginHelper.requiresLogin, function(req, res) {
+    this.get.define('/', loginHelper.requiresLogin, function(req, res) {
         'use strict';
         res.render('home/index', {
             value: req.session.value,
@@ -26,19 +28,3 @@ exports.controller = Controller.define('Home', function() {
     });
 
 });
-// exports.controller = Controller.define('Home', {
-//  // /
-//  actions: {
-//      get: [{
-//          url: '',
-//          middleware: loginHelper.requiresLogin,
-//          handler: function(req, res) {
-//              'use strict';
-//              res.render('home/index', {
-//                  value: req.session.value,
-//                  title: 'Welcome'
-//              });
-//          }]
-//      }
-//  }
-// }
