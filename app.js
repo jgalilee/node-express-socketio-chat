@@ -1,15 +1,18 @@
 // Dependencies
-var express = require('express')
-    , routes = require('./app/api/http/routes')
-    , io = require('socket.io')
-    , app = module.exports = express.createServer()
-    , controllers = require('./app/controllers/controllers')
-    , util = require('util')
-    , sessionStore = new express.session.MemoryStore()
-    , parseCookie = require('connect').utils.parseCookie;
-
+var express = require('express'),
+    //routes = require('./app/api/http/routes').routes,
+    //wsRoutes = require('./app/api/ws/routes').routes,
+    io = require('socket.io'),
+    app = module.exports = express.createServer(),
+    controllers = require('./app/controllers/controllers'),
+    util = require('util'),
+    sessionStore = new express.session.MemoryStore(),
+    parseCookie = require('connect').utils.parseCookie,
+    controller = require('./app/controller');
+//loginHelper = require('./app/api/helpers/loginHelper');
+controller.configure(app);
 // Configuration
-app.configure(function () {
+app.configure(function() {
     app.set('views', __dirname + '/app/views');
     app.set('view engine', 'jade');
 
@@ -23,20 +26,26 @@ app.configure(function () {
         store: sessionStore
     }));
 
-    app.use(require('stylus').middleware({ src:__dirname + '/public' }));
+    app.use(require('stylus').middleware({
+        src: __dirname + '/public'
+    }));
     app.use(app.router);
     app.use(express.static(__dirname + '/public'));
 });
 
 // Environment (Development)
-app.configure('development', function () {
-    app.use(express.errorHandler({ dumpExceptions:true, showStack:true }));
+app.configure('development', function() {
+    app.use(express.errorHandler({
+        dumpExceptions: true,
+        showStack: true
+    }));
 });
 
 // Environment (Production)
-app.configure('production', function () {
+app.configure('production', function() {
     app.use(express.errorHandler());
 });
+
 
 /*
  * WEB SERVER
@@ -44,7 +53,7 @@ app.configure('production', function () {
 
 // Helpers
 app.dynamicHelpers({
-    user: function (req, res) {
+    user: function(req, res) {
         if (req.session && req.session.user) {
             return {
                 name: req.session.user.login,
@@ -57,18 +66,50 @@ app.dynamicHelpers({
             };
         }
     },
-    flash: function (req, res) {
+    flash: function(req, res) {
         return req.flash();
     }
 });
 
 //Setup routes
+// configure routes for http
+//routes.setupRoutes(app, controllers);
+//app.get('/logout', loginHelper.requiresLogin, controllers.get('user').logout);
+// for (var url in routes) {
+//     var route = routes[url];
+//     for (var method in route) {
+//         var mapping = route[method];
+//         var requiresAuth = mapping['auth'];
+//         // console.log( route.controller);
+//         var controller = controllers.get(mapping.controller);
+//         // console.log( controllers);
+//         var action = controller[mapping.action];
+//         //console.log(app[method]);
+//         if (requiresAuth) {
+//             console.log(url, action)
+//             app[method](url, loginHelper.requiresLogin, action);
+//         } else {
+//             console.log(url, action)
+//             app[method](url, action);
+//         }
+//     }
 
-routes.setupRoutes(app, controllers);
+// }
+// load all the controllers
+var fs = require('fs');
+fs.readdirSync("./app/controllers/").forEach(function(file) {
+    console.log(file);
+    var filePath = "./app/controllers/" + file;
+    if (file[0] !== '.' && !fs.lstatSync(filePath).isDirectory()) {
+        require(filePath);
+    };
+
+});
+
 
 // Execute
 var sio = io.listen(app);
-sio.set('authorization', function (data, accept) {
+sio.set('authorization', function(data, accept) {
 
     console.log('checking authentication');
     console.log(data.headers);
@@ -80,7 +121,7 @@ sio.set('authorization', function (data, accept) {
     data.cookie = parseCookie(data.headers.cookie);
     data.sessionID = data.cookie['express.sid'];
 
-    sessionStore.load(data.sessionID, function (err, session) {
+    sessionStore.load(data.sessionID, function(err, session) {
 
         // Check if there was an error or if the server couldn't load.
         if (err || !session || !session.user) {
@@ -95,6 +136,8 @@ sio.set('authorization', function (data, accept) {
 
 });
 
+
+//wsRoutes.setup(sio);
 /*
  *  MESSAGE PROGRAM
  */
@@ -102,15 +145,15 @@ sio.set('authorization', function (data, accept) {
 var users = {};
 var rooms = ['room1', 'room2', 'room3'];
 
-sio.sockets.on('connection', function (socket) {
+sio.sockets.on('connection', function(socket) {
 
     var sess = socket.handshake.session;
     socket.log.info('a socket with sessionID', socket.handshake.sessionID, 'connected');
-    var keepAlive = function () {
-        sess.reload(function () {
-            sess.touch().save();
-        });
-    };
+    var keepAlive = function() {
+            sess.reload(function() {
+                sess.touch().save();
+            });
+        };
 
     // store the username in the socket session for this client
     var username = users[sess.user.login] = sess.user.login;
@@ -125,26 +168,25 @@ sio.sockets.on('connection', function (socket) {
     /*
      *  USER SENDS A MESSAGE
      */
-    socket.on('sendchat', function (data) {
-        if(data === "whois"){
+    socket.on('sendchat', function(data) {
+        if (data === "whois") {
             data = "The following users are connected ... ";
             for (var username in users) {
-                
+
                 data += "<br/> " + username;
             };
 
 
         }
-        sio.sockets.in(socket.room).emit('updatechat', socket.username, data);
+        sio.sockets. in (socket.room).emit('updatechat', socket.username, data);
         keepAlive();
     });
-
 
 
     /*
      *  USER CHANGES ROOM
      */
-    socket.on('switchRoom', function (newroom) {
+    socket.on('switchRoom', function(newroom) {
 
         // leave the current room (stored in session)
         socket.leave(socket.room);
@@ -167,7 +209,7 @@ sio.sockets.on('connection', function (socket) {
     /*
      *  USER DISCONNECTS
      */
-    socket.on('disconnect', function () {
+    socket.on('disconnect', function() {
 
         // remove the username from global users list
         delete users[socket.username];
@@ -187,11 +229,11 @@ sio.sockets.on('connection', function (socket) {
 /*
  *  USER ERROR
  */
-sio.sockets.on('error', function (reason) {
+sio.sockets.on('error', function(reason) {
     console.error('Unable to connect Socket.IO', reason);
 });
 
 // SERVER
-app.listen(3000, function () {
+app.listen(3000, function() {
     console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
